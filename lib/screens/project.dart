@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
+import 'package:nanoid/non_secure.dart';
 import 'package:pdb_flutter/components/dragcard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +36,50 @@ class _ProjectScreenState extends State<ProjectScreen> {
     });
   }
 
+  void removeTask(idItem, listIndex) {
+    var thatTask =
+        _ofLists.elementAt(listIndex).firstWhere((e) => e['id'] == idItem);
+    var index = _ofLists.elementAt(listIndex).indexOf(thatTask);
+    setState(() {
+      _ofLists.elementAt(listIndex).removeAt(index);
+      genUI();
+    });
+  }
+
+  void genUI() {
+    uiCompleted = _completed
+        .map(
+          (e) => DragAndDropItem(
+            child: DragCard(
+              task: e['task']!,
+              removeItem: () => removeTask(e['id'], 2),
+            ),
+          ),
+        )
+        .toList();
+    uiNstart = _notStarted
+        .map(
+          (e) => DragAndDropItem(
+            child: DragCard(
+              task: e['task']!,
+              removeItem: () => removeTask(e['id'], 0),
+            ),
+          ),
+        )
+        .toList();
+    uiProgress = _progress
+        .map(
+          (e) => DragAndDropItem(
+            child: DragCard(
+              task: e['task']!,
+              removeItem: () => removeTask(e['id'], 1),
+            ),
+          ),
+        )
+        .toList();
+    ofUiLists.addAll([uiNstart, uiProgress, uiCompleted]);
+  }
+
   void fetchProjectBody() async {
     var res = await Dio(_baseOptions).get(
       "https://fast-savannah-26464.herokuapp.com/database/${widget.id}",
@@ -45,38 +90,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
         _notStarted = res.data['body']['notStarted'];
         _completed = res.data['body']['completed'];
         _progress = res.data['body']['progress'];
-        uiCompleted = _completed
-            .map(
-              (e) => DragAndDropItem(
-                child: DragCard(
-                  task: e,
-                ),
-              ),
-            )
-            .toList();
-        uiNstart = _notStarted
-            .map(
-              (e) => DragAndDropItem(
-                child: DragCard(
-                  task: e,
-                ),
-              ),
-            )
-            .toList();
-        uiProgress = _progress
-            .map(
-              (e) => DragAndDropItem(
-                child: DragCard(
-                  task: e,
-                ),
-              ),
-            )
-            .toList();
-        ofUiLists.addAll([uiNstart, uiProgress, uiCompleted]);
+        genUI();
+        _ofLists.addAll([_notStarted, _progress, _completed]);
       });
-      _ofLists.addAll([_notStarted, _progress, _completed]);
     }
-    print(_completed);
   }
 
   @override
@@ -105,10 +122,14 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
 
   void addTask() {
+    Map<String, String> newTaskObj = {"id": nanoid(8), "task": newTaskText};
     var newTask = DragAndDropItem(
-      child: DragCard(task: newTaskText),
+      child: DragCard(
+        task: newTaskObj['task']!,
+        removeItem: () => removeTask(newTaskObj['id'], 0),
+      ),
     );
-    _notStarted.add(newTaskText);
+    _notStarted.add(newTaskObj);
     setState(() {
       uiNstart.add(newTask);
     });
@@ -233,16 +254,17 @@ class _ProjectScreenState extends State<ProjectScreen> {
                     child: Column(
                       children: [
                         Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Container(
-                              height: 5.0,
-                              width: 40.0,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.rectangle,
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(40.0),
-                              ),
-                            )),
+                          padding: EdgeInsets.all(10.0),
+                          child: Container(
+                            height: 5.0,
+                            width: 40.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(40.0),
+                            ),
+                          ),
+                        ),
                         Container(
                           width: MediaQuery.of(context).size.width - 40,
                           child: ElevatedButton(

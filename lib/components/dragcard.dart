@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class DragCard extends StatelessWidget {
   final String task;
-  const DragCard({Key? key, required this.task}) : super(key: key);
+  final removeItem;
+  const DragCard({Key? key, required this.task, required this.removeItem})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +14,7 @@ class DragCard extends StatelessWidget {
         child: ListTile(
           title: Text(this.task),
           trailing: IconButton(
-            onPressed: () => {},
+            onPressed: removeItem,
             icon: Icon(Icons.delete),
           ),
         ),
