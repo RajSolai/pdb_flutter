@@ -31,6 +31,7 @@ dependencies:
   http: any
   drag_and_drop_lists: ^0.3.2
   dio: ^4.0.0
+  shared_preferences: ^2.0.6
   nanoid: ^1.0.0
 
 dev_dependencies:
