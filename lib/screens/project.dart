@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:pdb_flutter/components/dragcard.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProjectScreen extends StatefulWidget {
@@ -198,12 +195,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 ],
                 onItemReorder:
                     (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {
-                  print({
-                    "olditemindex": oldItemIndex,
-                    "oldListIndex": oldListIndex,
-                    "newItemIndex": newItemIndex,
-                    "newListIndex": newListIndex
-                  });
                   var e =
                       ofUiLists.elementAt(oldListIndex).removeAt(oldItemIndex);
                   var task =
