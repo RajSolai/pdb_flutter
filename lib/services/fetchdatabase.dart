@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:pdb_flutter/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FetchDatabase {
   final _databaseController = StreamController<List>();
@@ -13,14 +15,11 @@ class FetchDatabase {
   }
 
   void makeApiCall() async {
-    var data = await http.get(Uri.parse(Constants().FetchDatabaseUrl),
-        headers: {
-          "auth-token":
-              "12998c017066eb0d2a70b94e6ed3192985855ce390f321bbdb832022888bd251"
-        });
+    var prefs = await SharedPreferences.getInstance();
+    var opts = BaseOptions(headers: {"auth-token": prefs.getString("token")});
+    var data = await Dio(opts).get(Constants().FetchDatabaseUrl);
     if (data.statusCode == 200) {
-      List jill = json.decode(data.body);
-      _databaseController.sink.add(jill);
+      _databaseController.sink.add(data.data);
     }
   }
 

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pdb_flutter/screens/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,10 +17,13 @@ class _LoginScreenState extends State<LoginScreen> {
   void getToken() async {
     var pref = await SharedPreferences.getInstance();
     var data = {"passcode": _loginCode};
-    var res = await Dio().post("", data: data);
+    var res = await Dio()
+        .post("https://fast-savannah-26464.herokuapp.com/login", data: data);
     print(res.statusMessage);
     if (res.statusMessage != "Invalid Passcode") {
       pref.setString("token", res.data['token']);
+      Navigator.pushReplacement(
+          context, CupertinoPageRoute(builder: (c) => Home()));
     }
   }
 
@@ -29,8 +34,12 @@ class _LoginScreenState extends State<LoginScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 3,
+              ),
               Center(
                 child: Container(
+                  width: MediaQuery.of(context).size.width - 100.0,
                   child: TextField(
                     onChanged: (val) => setState(() {
                       _loginCode = val;
@@ -46,11 +55,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 20.0,
+              ),
               Center(
                 child: SizedBox(
                   child: ElevatedButton(
                     child: Text("Login"),
-                    onPressed: () {},
+                    onPressed: () => getToken(),
                   ),
                 ),
               )

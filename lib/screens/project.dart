@@ -5,6 +5,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:pdb_flutter/components/dragcard.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProjectScreen extends StatefulWidget {
   final String id;
@@ -25,9 +26,17 @@ class _ProjectScreenState extends State<ProjectScreen> {
   List<DragAndDropItem> uiProgress = [];
   List<List<DragAndDropItem>> ofUiLists = [];
   late BaseOptions _baseOptions;
+  late String token;
 
   String newTaskText = "";
   String databaseName = "Loading...";
+
+  Future<void> getToken() async {
+    var pref = await SharedPreferences.getInstance();
+    setState(() {
+      token = pref.getString("token") ?? "";
+    });
+  }
 
   void fetchProjectBody() async {
     var res = await Dio(_baseOptions).get(
@@ -76,11 +85,12 @@ class _ProjectScreenState extends State<ProjectScreen> {
   @override
   void initState() {
     super.initState();
-    _baseOptions = BaseOptions(headers: {
-      "auth-token":
-          "12998c017066eb0d2a70b94e6ed3192985855ce390f321bbdb832022888bd251"
-    });
-    fetchProjectBody();
+    getToken().then(
+      (_) => {
+        _baseOptions = BaseOptions(headers: {"auth-token": token}),
+        fetchProjectBody()
+      },
+    );
   }
 
   void saveChanges() async {
@@ -92,7 +102,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
     var res = await Dio(_baseOptions).put(
         "https://fast-savannah-26464.herokuapp.com/project/${widget.id}",
         data: newBody);
-    if (res.statusCode == 200){
+    if (res.statusCode == 200) {
       fetchProjectBody();
     }
   }
@@ -284,5 +294,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

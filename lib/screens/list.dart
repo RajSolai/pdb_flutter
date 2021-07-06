@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:nanoid/nanoid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListScreen extends StatefulWidget {
   final id;
@@ -15,7 +16,15 @@ class _ListScreenState extends State<ListScreen> {
   List<dynamic> completedList = [];
   String databaseName = "Loading...";
   String newTaskText = "";
+  late String token;
   late BaseOptions _baseOptions;
+
+  Future<void> getToken() async {
+    var pref = await SharedPreferences.getInstance();
+    setState(() {
+      token = pref.getString("token") ?? "";
+    });
+  }
 
   void makeApiCall() async {
     var res = await Dio(_baseOptions).get(
@@ -85,11 +94,14 @@ class _ListScreenState extends State<ListScreen> {
   @override
   void initState() {
     super.initState();
-    _baseOptions = BaseOptions(headers: {
-      "auth-token":
-          "12998c017066eb0d2a70b94e6ed3192985855ce390f321bbdb832022888bd251"
-    });
-    makeApiCall();
+    getToken().then(
+      (_) => {
+        _baseOptions = BaseOptions(
+          headers: {"auth-token": token},
+        ),
+        makeApiCall()
+      },
+    );
   }
 
   @override

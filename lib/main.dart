@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pdb_flutter/screens/home.dart';
-import 'package:pdb_flutter/screens/project.dart';
+import 'package:pdb_flutter/screens/splash.dart';
  
 void main() => runApp(MyApp());
  
@@ -9,7 +8,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Material App',
-      home: Login()
+      home: Splash()
     );
   }
 }

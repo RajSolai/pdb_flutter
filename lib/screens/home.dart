@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pdb_flutter/components/dbcard.dart';
-import 'package:pdb_flutter/screens/list.dart';
 import 'package:pdb_flutter/services/fetchdatabase.dart';
 
 class Home extends StatelessWidget {
