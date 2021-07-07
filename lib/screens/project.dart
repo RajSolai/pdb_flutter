@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:nanoid/non_secure.dart';
 import 'package:pdb_flutter/components/dragcard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -143,19 +144,14 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: Text(
           databaseName,
-          style: TextStyle(
-            color: Colors.black,
-          ),
         ),
         centerTitle: true,
         leading: IconButton(
           onPressed: () => {Navigator.pop(context)},
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.black,
           ),
         ),
       ),
@@ -245,7 +241,11 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: SchedulerBinding
+                                  .instance!.window.platformBrightness ==
+                              Brightness.dark
+                          ? Colors.black26
+                          : Colors.white,
                       boxShadow: [
                         BoxShadow(color: Colors.black26, blurRadius: 1.0)
                       ],

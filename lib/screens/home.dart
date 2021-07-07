@@ -11,11 +11,9 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: Text(
           "Select Database",
           style: TextStyle(
-            color: Colors.black,
           ),
         ),
         centerTitle: true,

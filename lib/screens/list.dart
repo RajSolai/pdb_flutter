@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:nanoid/nanoid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -114,19 +115,14 @@ class _ListScreenState extends State<ListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: Text(
           databaseName,
-          style: TextStyle(
-            color: Colors.black,
-          ),
         ),
         centerTitle: true,
         leading: IconButton(
           onPressed: () => {Navigator.pop(context)},
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.black,
           ),
         ),
       ),
@@ -194,7 +190,11 @@ class _ListScreenState extends State<ListScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: SchedulerBinding
+                                  .instance!.window.platformBrightness ==
+                              Brightness.dark
+                          ? Colors.black26
+                          : Colors.white,
                       boxShadow: [
                         BoxShadow(color: Colors.black26, blurRadius: 1.0)
                       ],
