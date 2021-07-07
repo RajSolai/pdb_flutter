@@ -118,6 +118,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
         data: newBody);
     if (res.statusCode == 200) {
       fetchProjectBody();
+      const snackBar = SnackBar(
+        content: Text("Changes Made Successfully 🎉️"),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 

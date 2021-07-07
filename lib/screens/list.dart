@@ -88,7 +88,13 @@ class _ListScreenState extends State<ListScreen> {
       "https://fast-savannah-26464.herokuapp.com/list/${widget.id}",
       data: newBody,
     );
-    print(res.data);
+    if (res.statusCode == 200) {
+      makeApiCall();
+      const snackBar = SnackBar(
+        content: Text("Changes Made Successfully 🎉️"),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override

@@ -15,6 +15,10 @@ class _LoginScreenState extends State<LoginScreen> {
   String _loginCode = "";
 
   void getToken() async {
+    const snackBar = SnackBar(
+      content: Text("Logging in...."),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
     var pref = await SharedPreferences.getInstance();
     var data = {"passcode": _loginCode};
     var res = await Dio()
@@ -35,7 +39,16 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height / 3,
+                height: MediaQuery.of(context).size.height / 4,
+              ),
+              Container(
+                child: Image.asset(
+                  "assets/pdb_icon.png",
+                  height: 150.0,
+                ),
+              ),
+              SizedBox(
+                height: 30.0,
               ),
               Center(
                 child: Container(
@@ -60,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               Center(
                 child: SizedBox(
+                  width: MediaQuery.of(context).size.width - 120.0,
                   child: ElevatedButton(
                     child: Text("Login"),
                     onPressed: () => getToken(),
