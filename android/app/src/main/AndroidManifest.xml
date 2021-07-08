@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.rajsolai.pdbandroid.pdb_flutter">
    <application
-        android:label="pdb_flutter"
+	   android:label="Personal Database"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
