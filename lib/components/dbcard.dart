@@ -7,10 +7,10 @@ class DbCard extends StatelessWidget {
   final String name, desc, type, id;
   const DbCard(
       {Key? key,
-      required String this.name,
-      required String this.desc,
-      required String this.id,
-      required String this.type})
+      required this.name,
+      required this.desc,
+      required this.id,
+      required this.type})
       : super(key: key);
 
   @override
@@ -20,7 +20,9 @@ class DbCard extends StatelessWidget {
         onTap: () {
           Widget screen;
           type == "project"
-              ? screen = ProjectScreen(id: id,)
+              ? screen = ProjectScreen(
+                  id: id,
+                )
               : screen = ListScreen(id: id);
           Navigator.push(context, CupertinoPageRoute(builder: (ctx) => screen));
         },

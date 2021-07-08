@@ -3,8 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:pdb_flutter/components/dbcard.dart';
 import 'package:pdb_flutter/services/fetchdatabase.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
   final fetchDatabase = FetchDatabase();
 
   @override
@@ -55,7 +61,9 @@ class Home extends StatelessWidget {
   }
 
   @override
-  void dispose() {
+  void dispose() { 
     fetchDatabase.dispose();
+    super.dispose();
   }
+
 }

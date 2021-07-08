@@ -5,8 +5,8 @@ import 'package:nanoid/nanoid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ListScreen extends StatefulWidget {
-  final id;
-  const ListScreen({Key? key, @required this.id}) : super(key: key);
+  final String id;
+  const ListScreen({Key? key, required this.id}) : super(key: key);
 
   @override
   _ListScreenState createState() => _ListScreenState();
@@ -28,7 +28,7 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   void makeApiCall() async {
-    var res = await Dio(_baseOptions).get(
+    Response res = await Dio(_baseOptions).get(
       "https://fast-savannah-26464.herokuapp.com/database/${widget.id}",
     );
     if (res.statusCode == 200) {
@@ -49,7 +49,7 @@ class _ListScreenState extends State<ListScreen> {
       var item = completedList.firstWhere(
           (element) => (element['id'].toString() == id),
           orElse: () => "nothign");
-      var remaining = completedList
+      List remaining = completedList
           .where((element) => (element['id'].toString() != id))
           .toList();
       setState(() {
@@ -61,7 +61,7 @@ class _ListScreenState extends State<ListScreen> {
       var item = todoList.firstWhere(
           (element) => (element['id'].toString() == id),
           orElse: () => "nothign");
-      var remaining = todoList
+      List remaining = todoList
           .where((element) => (element['id'].toString() != id))
           .toList();
       setState(() {
@@ -83,9 +83,12 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   void saveChanges() async {
-    var newBody = {"todoList": todoList, "completedList": completedList};
+    Map<String, List> newBody = {
+      "todoList": todoList,
+      "completedList": completedList
+    };
     print(newBody);
-    var res = await Dio(_baseOptions).put(
+    Response res = await Dio(_baseOptions).put(
       "https://fast-savannah-26464.herokuapp.com/list/${widget.id}",
       data: newBody,
     );

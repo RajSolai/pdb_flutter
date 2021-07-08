@@ -31,7 +31,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   String databaseName = "Loading...";
 
   Future<void> getToken() async {
-    var pref = await SharedPreferences.getInstance();
+    SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       token = pref.getString("token") ?? "";
     });
@@ -40,7 +40,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   void removeTask(idItem, listIndex) {
     var thatTask =
         _ofLists.elementAt(listIndex).firstWhere((e) => e['id'] == idItem);
-    var index = _ofLists.elementAt(listIndex).indexOf(thatTask);
+    int index = _ofLists.elementAt(listIndex).indexOf(thatTask);
     setState(() {
       _ofLists.elementAt(listIndex).removeAt(index);
       genUI();
@@ -82,7 +82,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
 
   void fetchProjectBody() async {
-    var res = await Dio(_baseOptions).get(
+    Response res = await Dio(_baseOptions).get(
       "https://fast-savannah-26464.herokuapp.com/database/${widget.id}",
     );
     if (res.statusCode == 200) {

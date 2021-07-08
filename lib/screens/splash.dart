@@ -41,9 +41,7 @@ class _SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          children: [Text("welcome to splash")],
-        ),
+        child: CircularProgressIndicator(),
       ),
     );
   }

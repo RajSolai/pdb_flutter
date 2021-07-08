@@ -19,11 +19,10 @@ class _LoginScreenState extends State<LoginScreen> {
       content: Text("Logging in...."),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    var pref = await SharedPreferences.getInstance();
-    var data = {"passcode": _loginCode};
-    var res = await Dio()
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    Map<String, String> data = {"passcode": _loginCode};
+    Response res = await Dio()
         .post("https://fast-savannah-26464.herokuapp.com/login", data: data);
-    print(res.statusMessage);
     if (res.statusMessage != "Invalid Passcode") {
       pref.setString("token", res.data['token']);
       Navigator.pushReplacement(

@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:pdb_flutter/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FetchDatabase {
   final _databaseController = StreamController<List>();
+  static String apiUrl = "https://fast-savannah-26464.herokuapp.com";
 
   Stream<List> get databaseStream => _databaseController.stream;
 
@@ -13,9 +13,10 @@ class FetchDatabase {
   }
 
   void makeApiCall() async {
-    var prefs = await SharedPreferences.getInstance();
-    var opts = BaseOptions(headers: {"auth-token": prefs.getString("token")});
-    var data = await Dio(opts).get(Constants().FetchDatabaseUrl);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    BaseOptions opts =
+        BaseOptions(headers: {"auth-token": prefs.getString("token")});
+    Response data = await Dio(opts).get(apiUrl);
     if (data.statusCode == 200) {
       _databaseController.sink.add(data.data);
     }

@@ -25,16 +25,6 @@ class MyApp extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        bottomSheetTheme: BottomSheetThemeData(
-          modalBackgroundColor: Colors.black,
-          backgroundColor: Colors.black,
-        ),
-        buttonColor: Colors.black12,
-        textTheme: TextTheme(
-          bodyText1: TextStyle(
-            color: Colors.white,
-          ),
-        ),
       ),
       home: Splash(),
     );
