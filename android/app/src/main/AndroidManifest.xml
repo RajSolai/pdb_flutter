@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.rajsolai.pdbandroid.pdb_flutter">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
 	   android:label="Personal Database"
         android:icon="@mipmap/launcher_icon">
