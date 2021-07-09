@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pdb_flutter/components/dbcard.dart';
 import 'package:pdb_flutter/services/fetchdatabase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -11,7 +13,135 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final fetchDatabase = FetchDatabase();
+  late String token;
+  String projectName = "";
+  String projectDesc = "";
+  String type = "Project";
+  final FetchDatabase fetchDatabase = FetchDatabase();
+
+  Future<void> getToken() async {
+    var pref = await SharedPreferences.getInstance();
+    setState(() {
+      token = pref.getString("token") ?? "";
+    });
+  }
+
+  void makeApiCall() async {
+    BaseOptions opts = BaseOptions(headers: {"auth-token": token});
+    Map<String, String> data = {"name": projectName, "desc": projectDesc};
+    Response res = await Dio(opts)
+        .post("https://fast-savannah-26464.herokuapp.com/$type", data: data);
+    if (res.data != "Access Denied") {
+      const snackBar = SnackBar(content: Text("Project Created Successfully"));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  void reBuildDialog(BuildContext context) {
+    Navigator.pop(context);
+    var nameCtrl = TextEditingController(text: projectName);
+    var descCtrl = TextEditingController(text: projectDesc);
+    showAddProjectDialog(nameCtrl, descCtrl);
+  }
+
+  void showAddProjectDialog(TextEditingController? nameTextController,
+      TextEditingController? descTextController) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return SimpleDialog(
+          contentPadding: EdgeInsets.all(5.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          title: Text("Create New Project"),
+          children: [
+            Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  TextField(
+                    onChanged: (String e) {
+                      setState(() {
+                        projectName = e;
+                      });
+                    },
+                    controller: nameTextController,
+                    decoration: InputDecoration(
+                      hintText: "Enter Project Name",
+                      hintStyle: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  TextField(
+                    onChanged: (String e) {
+                      setState(() {
+                        projectDesc = e;
+                      });
+                    },
+                    controller: descTextController,
+                    decoration: InputDecoration(
+                      hintText: "Enter Project Description",
+                      hintStyle: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  DropdownButton<String>(
+                    value: type,
+                    hint: Text("Select the Project type"),
+                    items:
+                        ["Project", "List"].map<DropdownMenuItem<String>>((e) {
+                      return DropdownMenuItem(
+                        child: Text(e),
+                        value: e,
+                      );
+                    }).toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        type = val!;
+                      });
+                      reBuildDialog(ctx);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                  },
+                  child: Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () => makeApiCall(),
+                  child: Text("Create Project"),
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,51 +149,55 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text(
           "Select Database",
-          style: TextStyle(
-          ),
+          style: TextStyle(),
         ),
         centerTitle: true,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showAddProjectDialog(null, null),
+        child: Icon(Icons.add_rounded),
+      ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height - 100,
-              margin: EdgeInsets.all(5.0),
-              child: StreamBuilder(
-                stream: fetchDatabase.databaseStream,
-                builder: (context, AsyncSnapshot<List> snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        var item = snapshot.data![index];
-                        return DbCard(
-                          name: item['name'],
-                          desc: item['description'],
-                          id: item['id'],
-                          type: item['type'],
-                        );
-                      },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height - 100,
+                margin: EdgeInsets.all(5.0),
+                child: StreamBuilder(
+                  stream: fetchDatabase.databaseStream,
+                  builder: (context, AsyncSnapshot<List> snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var item = snapshot.data![index];
+                          return DbCard(
+                            name: item['name'],
+                            desc: item['description'],
+                            id: item['id'],
+                            type: item['type'],
+                          );
+                        },
+                      );
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
-                  }
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   @override
-  void dispose() { 
+  void dispose() {
     fetchDatabase.dispose();
     super.dispose();
   }
-
 }

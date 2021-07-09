@@ -9,7 +9,9 @@ class FetchDatabase {
   Stream<List> get databaseStream => _databaseController.stream;
 
   FetchDatabase() {
-    makeApiCall();
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      makeApiCall();
+    });
   }
 
   void makeApiCall() async {
