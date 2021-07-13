@@ -241,11 +241,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: SchedulerBinding
-                                  .instance!.window.platformBrightness ==
-                              Brightness.dark
-                          ? Colors.black26
-                          : Colors.white,
+                      color: Color(0xFF374151),
                       boxShadow: [
                         BoxShadow(color: Colors.black26, blurRadius: 1.0)
                       ],

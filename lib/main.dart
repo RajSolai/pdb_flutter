@@ -11,20 +11,33 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Personal Database',
-      darkTheme: ThemeData(
+      theme: ThemeData(
+        splashColor: Color(0xFF1F2937),
+        accentColor: Color(0xFF7C3AED),
         brightness: Brightness.dark,
-        appBarTheme: AppBarTheme(
-          brightness: Brightness.dark,
-          color: Colors.black,
-          textTheme: TextTheme(
-            headline1: TextStyle(
-              color: Colors.white,
-            ),
+        scaffoldBackgroundColor: Color(0xFF1F2937),
+        backgroundColor: Color(0xFF1F2937),
+        cardColor: Color(0xFF374151),
+        checkboxTheme: CheckboxThemeData(
+          checkColor: MaterialStateProperty.all(
+            Colors.white,
           ),
-          iconTheme: IconThemeData(
-            color: Colors.white,
+          fillColor: MaterialStateProperty.all(
+            Color(0xFF7C3AED),
           ),
         ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Color(0xFF7C3AED),
+          foregroundColor: Colors.white,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(
+              Color(0xFF7C3AED),
+            ),
+          ),
+        ),
+        primaryColor: Color(0xFF7C3AED),
       ),
       home: Splash(),
     );

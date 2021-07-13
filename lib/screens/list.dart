@@ -193,11 +193,7 @@ class _ListScreenState extends State<ListScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: SchedulerBinding
-                                  .instance!.window.platformBrightness ==
-                              Brightness.dark
-                          ? Colors.black26
-                          : Colors.white,
+                      color: Color(0xFF374151),
                       boxShadow: [
                         BoxShadow(color: Colors.black26, blurRadius: 1.0)
                       ],
@@ -238,6 +234,7 @@ class _ListScreenState extends State<ListScreen> {
                             decoration: InputDecoration(
                               suffixIcon: Icon(Icons.task_alt_rounded),
                               hintText: "Enter Task Name",
+                              focusColor: Color(0xFF7C3AED),
                               hintStyle: TextStyle(
                                 fontSize: 16.0,
                                 color: Colors.grey,

@@ -183,7 +183,9 @@ class _HomeState extends State<Home> {
                       );
                     }
                     return Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF7C3AED),
+                      ),
                     );
                   },
                 ),
