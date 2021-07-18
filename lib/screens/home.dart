@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
     BaseOptions opts = BaseOptions(headers: {"auth-token": token});
     Map<String, String> data = {"name": projectName, "desc": projectDesc};
     Response res = await Dio(opts)
-        .post("https://fast-savannah-26464.herokuapp.com/$type", data: data);
+        .post("https://pdb-api.eu-gb.cf.appdomain.cloud/$type", data: data);
     if (res.data != "Access Denied") {
       const snackBar = SnackBar(content: Text("Project Created Successfully"));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);

@@ -83,7 +83,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
   void fetchProjectBody() async {
     Response res = await Dio(_baseOptions).get(
-      "https://fast-savannah-26464.herokuapp.com/database/${widget.id}",
+      "https://pdb-api.eu-gb.cf.appdomain.cloud/database/${widget.id}",
     );
     if (res.statusCode == 200) {
       setState(() {

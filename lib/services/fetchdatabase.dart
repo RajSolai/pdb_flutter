@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class FetchDatabase {
   final _databaseController = StreamController<List>();
-  static String apiUrl = "https://fast-savannah-26464.herokuapp.com";
+  static String apiUrl = "https://pdb-api.eu-gb.cf.appdomain.cloud/";
 
   Stream<List> get databaseStream => _databaseController.stream;
 

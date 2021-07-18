@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     Map<String, String> data = {"passcode": _loginCode};
     Response res = await Dio()
-        .post("https://fast-savannah-26464.herokuapp.com/login", data: data);
+        .post("https://pdb-api.eu-gb.cf.appdomain.cloud/login", data: data);
     if (res.statusMessage != "Invalid Passcode") {
       pref.setString("token", res.data['token']);
       Navigator.pushReplacement(
