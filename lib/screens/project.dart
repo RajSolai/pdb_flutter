@@ -1,9 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:nanoid/non_secure.dart';
 import 'package:pdb_flutter/components/dragcard.dart';
+import 'package:pdb_flutter/services/fetchdatabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProjectScreen extends StatefulWidget {
@@ -24,18 +23,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
   List<DragAndDropItem> uiNstart = [];
   List<DragAndDropItem> uiProgress = [];
   List<List<DragAndDropItem>> ofUiLists = [];
-  late BaseOptions _baseOptions;
-  late String token;
+  late FetchDatabase fetchDatabase;
 
   String newTaskText = "";
   String databaseName = "Loading...";
-
-  Future<void> getToken() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    setState(() {
-      token = pref.getString("token") ?? "";
-    });
-  }
 
   void removeTask(idItem, listIndex) {
     var thatTask =
@@ -81,44 +72,37 @@ class _ProjectScreenState extends State<ProjectScreen> {
     ofUiLists.addAll([uiNstart, uiProgress, uiCompleted]);
   }
 
-  void fetchProjectBody() async {
-    Response res = await Dio(_baseOptions).get(
-      "https://pdb-api.eu-gb.cf.appdomain.cloud/database/${widget.id}",
-    );
-    if (res.statusCode == 200) {
-      setState(() {
-        databaseName = res.data['name'];
-        _notStarted = res.data['body']['notStarted'];
-        _completed = res.data['body']['completed'];
-        _progress = res.data['body']['progress'];
-        genUI();
-        _ofLists.addAll([_notStarted, _progress, _completed]);
-      });
-    }
+  void generateLists() async{
+    var res = await fetchDatabase.fetchProjectBody(widget.id);
+    print(res);
+    setState(() {
+      databaseName = res.data['name'];
+      _notStarted = res.data['body']['notStarted'];
+      _completed = res.data['body']['completed'];
+      _progress = res.data['body']['progress'];
+      genUI();
+      _ofLists.addAll([_notStarted, _progress, _completed]);
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    getToken().then(
-      (_) => {
-        _baseOptions = BaseOptions(headers: {"auth-token": token}),
-        fetchProjectBody()
-      },
-    );
+    setState(() {
+      fetchDatabase = FetchDatabase(false);
+    });
+    generateLists();
   }
 
   void saveChanges() async {
-    var newBody = {
+     var newBody = {
       "notStarted": _notStarted,
       "completed": _completed,
       "progress": _progress
     };
-    var res = await Dio(_baseOptions).put(
-        "https://fast-savannah-26464.herokuapp.com/project/${widget.id}",
-        data: newBody);
+    var res = await fetchDatabase.saveProjectBody(newBody, widget.id);
     if (res.statusCode == 200) {
-      fetchProjectBody();
+      generateLists();
       const snackBar = SnackBar(
         content: Text("Changes Made Successfully 🎉️"),
       );

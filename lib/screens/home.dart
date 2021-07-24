@@ -26,17 +26,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-  void makeApiCall() async {
-    BaseOptions opts = BaseOptions(headers: {"auth-token": token});
-    Map<String, String> data = {"name": projectName, "desc": projectDesc};
-    Response res = await Dio(opts)
-        .post("https://pdb-api.eu-gb.cf.appdomain.cloud/$type", data: data);
-    if (res.data != "Access Denied") {
-      const snackBar = SnackBar(content: Text("Project Created Successfully"));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-  }
-
   void reBuildDialog(BuildContext context) {
     Navigator.pop(context);
     var nameCtrl = TextEditingController(text: projectName);
@@ -126,7 +115,8 @@ class _HomeState extends State<Home> {
                   child: Text("Cancel"),
                 ),
                 TextButton(
-                  onPressed: () => makeApiCall(),
+                  onPressed: () => fetchDatabase.addProject(
+                      type, projectName, projectDesc, context),
                   child: Text("Create Project"),
                 )
               ],
@@ -142,7 +132,7 @@ class _HomeState extends State<Home> {
     super.initState();
     getToken().then((_) {
       setState(() {
-        fetchDatabase = FetchDatabase();
+        fetchDatabase = FetchDatabase(true);
       });
     });
   }

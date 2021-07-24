@@ -1,8 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pdb_flutter/screens/home.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:pdb_flutter/services/fetchdatabase.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -14,20 +13,16 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String _loginCode = "";
 
-  void getToken() async {
-    const snackBar = SnackBar(
-      content: Text("Logging in...."),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    Map<String, String> data = {"passcode": _loginCode};
-    Response res = await Dio()
-        .post("https://pdb-api.eu-gb.cf.appdomain.cloud/login", data: data);
-    if (res.statusMessage != "Invalid Passcode") {
-      pref.setString("token", res.data['token']);
-      Navigator.pushReplacement(
-          context, CupertinoPageRoute(builder: (c) => Home()));
-    }
+  void login() {
+    var dbService = FetchDatabase(false);
+    dbService.getToken(context, _loginCode).then(
+          (_) => Navigator.pushReplacement(
+            context,
+            CupertinoPageRoute(
+              builder: (c) => Home(),
+            ),
+          ),
+        );
   }
 
   @override
@@ -75,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: MediaQuery.of(context).size.width - 120.0,
                   child: ElevatedButton(
                     child: Text("Login"),
-                    onPressed: () => getToken(),
+                    onPressed: () => login(),
                   ),
                 ),
               )

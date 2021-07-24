@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:nanoid/nanoid.dart';
+import 'package:pdb_flutter/services/fetchdatabase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ListScreen extends StatefulWidget {
@@ -17,20 +17,12 @@ class _ListScreenState extends State<ListScreen> {
   List<dynamic> completedList = [];
   String databaseName = "Loading...";
   String newTaskText = "";
-  late String token;
-  late BaseOptions _baseOptions;
-
-  Future<void> getToken() async {
-    var pref = await SharedPreferences.getInstance();
-    setState(() {
-      token = pref.getString("token") ?? "";
-    });
-  }
+  late FetchDatabase fetchDatabase;
+  final textController = TextEditingController();
 
   void makeApiCall() async {
-    Response res = await Dio(_baseOptions).get(
-      "https://pdb-api.eu-gb.cf.appdomain.cloud/database/${widget.id}",
-    );
+    var res = await fetchDatabase.fetchListBody(widget.id);
+    print(res);
     if (res.statusCode == 200) {
       setState(() {
         todoList = res.data['body']['todoList'];
@@ -49,6 +41,7 @@ class _ListScreenState extends State<ListScreen> {
       var item = completedList.firstWhere(
           (element) => (element['id'].toString() == id),
           orElse: () => "nothign");
+      item['checked'] = false;
       List remaining = completedList
           .where((element) => (element['id'].toString() != id))
           .toList();
@@ -61,6 +54,7 @@ class _ListScreenState extends State<ListScreen> {
       var item = todoList.firstWhere(
           (element) => (element['id'].toString() == id),
           orElse: () => "nothign");
+      item['checked'] = true;
       List remaining = todoList
           .where((element) => (element['id'].toString() != id))
           .toList();
@@ -80,38 +74,16 @@ class _ListScreenState extends State<ListScreen> {
     setState(() {
       todoList.insert(0, task);
     });
-  }
-
-  void saveChanges() async {
-    Map<String, List> newBody = {
-      "todoList": todoList,
-      "completedList": completedList
-    };
-    print(newBody);
-    Response res = await Dio(_baseOptions).put(
-      "https://fast-savannah-26464.herokuapp.com/list/${widget.id}",
-      data: newBody,
-    );
-    if (res.statusCode == 200) {
-      makeApiCall();
-      const snackBar = SnackBar(
-        content: Text("Changes Made Successfully 🎉️"),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
+    textController.clear();
   }
 
   @override
   void initState() {
     super.initState();
-    getToken().then(
-      (_) => {
-        _baseOptions = BaseOptions(
-          headers: {"auth-token": token},
-        ),
-        makeApiCall()
-      },
-    );
+    setState((){
+      fetchDatabase = FetchDatabase(false);
+    });
+    makeApiCall();
   }
 
   @override
@@ -174,7 +146,12 @@ class _ListScreenState extends State<ListScreen> {
                             },
                             value: true,
                           ),
-                          title: Text(task['task']),
+                          title: Text(
+                            task['task'],
+                            style: TextStyle(
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -219,13 +196,21 @@ class _ListScreenState extends State<ListScreen> {
                         Container(
                           width: MediaQuery.of(context).size.width - 40,
                           child: ElevatedButton(
-                            onPressed: () => {saveChanges()},
+                            onPressed: () => {
+                              fetchDatabase.saveLists(
+                                widget.id,
+                                todoList,
+                                completedList,
+                                context,
+                              )
+                            },
                             child: Text("Save Changes to DataBase"),
                           ),
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width - 40,
                           child: TextField(
+                            controller: textController,
                             onChanged: (val) => {
                               setState(() {
                                 newTaskText = val;
