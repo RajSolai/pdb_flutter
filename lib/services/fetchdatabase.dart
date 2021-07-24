@@ -35,7 +35,7 @@ class FetchDatabase {
     SharedPreferences pref = await SharedPreferences.getInstance();
     Map<String, String> data = {"passcode": loginCode};
     Response res = await Dio()
-        .post("https://pdb-api.eu-gb.cf.appdomain.cloud/login", data: data);
+        .post("$apiUrl/login", data: data);
     if (res.statusMessage != "Invalid Passcode") {
       pref.setString("token", res.data['token']);
       return true;
@@ -98,7 +98,6 @@ class FetchDatabase {
 
   Future<Response> fetchListBody(String id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    print("$apiUrl/list/$id");
     BaseOptions opts =
         BaseOptions(headers: {"auth-token": prefs.getString("token")});
     Response res = await Dio(opts).get(

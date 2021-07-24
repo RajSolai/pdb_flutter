@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:nanoid/non_secure.dart';
 import 'package:pdb_flutter/components/dragcard.dart';
 import 'package:pdb_flutter/services/fetchdatabase.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProjectScreen extends StatefulWidget {
   final String id;
@@ -74,7 +73,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
   void generateLists() async{
     var res = await fetchDatabase.fetchProjectBody(widget.id);
-    print(res);
     setState(() {
       databaseName = res.data['name'];
       _notStarted = res.data['body']['notStarted'];

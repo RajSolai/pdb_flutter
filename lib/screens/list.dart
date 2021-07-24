@@ -1,8 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:nanoid/nanoid.dart';
 import 'package:pdb_flutter/services/fetchdatabase.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ListScreen extends StatefulWidget {
   final String id;
@@ -22,22 +20,17 @@ class _ListScreenState extends State<ListScreen> {
 
   void makeApiCall() async {
     var res = await fetchDatabase.fetchListBody(widget.id);
-    print(res);
     if (res.statusCode == 200) {
       setState(() {
         todoList = res.data['body']['todoList'];
         completedList = res.data['body']['completedList'];
         databaseName = res.data['name'];
       });
-      print(todoList);
-    } else {
-      print(res.statusCode);
     }
   }
 
   void handleTask(bool val, String id) {
     if (!val) {
-      print("move to todolist");
       var item = completedList.firstWhere(
           (element) => (element['id'].toString() == id),
           orElse: () => "nothign");
@@ -50,7 +43,6 @@ class _ListScreenState extends State<ListScreen> {
         completedList = remaining;
       });
     } else {
-      print("move to completed");
       var item = todoList.firstWhere(
           (element) => (element['id'].toString() == id),
           orElse: () => "nothign");
