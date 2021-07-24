@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
   String projectName = "";
   String projectDesc = "";
   String type = "Project";
-  final FetchDatabase fetchDatabase = FetchDatabase();
+  late FetchDatabase fetchDatabase;
 
   Future<void> getToken() async {
     var pref = await SharedPreferences.getInstance();
@@ -140,7 +140,11 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    getToken();
+    getToken().then((_) {
+      setState(() {
+        fetchDatabase = FetchDatabase();
+      });
+    });
   }
 
   @override
