@@ -11,34 +11,36 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Personal Database',
-      theme: ThemeData(
-        splashColor: Color(0xFF1F2937),
-        accentColor: Color(0xFF7C3AED),
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: Color(0xFF1F2937),
-        backgroundColor: Color(0xFF1F2937),
-        cardColor: Color(0xFF374151),
-        checkboxTheme: CheckboxThemeData(
-          checkColor: MaterialStateProperty.all(
-            Colors.white,
-          ),
-          fillColor: MaterialStateProperty.all(
-            Color(0xFF7C3AED),
-          ),
-        ),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Color(0xFF7C3AED),
-          foregroundColor: Colors.white,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
-              Color(0xFF7C3AED),
-            ),
-          ),
-        ),
-        primaryColor: Color(0xFF7C3AED),
-      ),
+      theme: ThemeData(useMaterial3: true, brightness: Brightness.light),
+      darkTheme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
+      // theme: ThemeData(
+      //   splashColor: Color(0xFF1F2937),
+      //   accentColor: Color(0xFF7C3AED),
+      //   brightness: Brightness.dark,
+      //   scaffoldBackgroundColor: Color(0xFF1F2937),
+      //   backgroundColor: Color(0xFF1F2937),
+      //   cardColor: Color(0xFF374151),
+      //   checkboxTheme: CheckboxThemeData(
+      //     checkColor: MaterialStateProperty.all(
+      //       Colors.white,
+      //     ),
+      //     fillColor: MaterialStateProperty.all(
+      //       Color(0xFF7C3AED),
+      //     ),
+      //   ),
+      //   floatingActionButtonTheme: FloatingActionButtonThemeData(
+      //     backgroundColor: Color(0xFF7C3AED),
+      //     foregroundColor: Colors.white,
+      //   ),
+      //   elevatedButtonTheme: ElevatedButtonThemeData(
+      //     style: ButtonStyle(
+      //       backgroundColor: MaterialStateProperty.all(
+      //         Color(0xFF7C3AED),
+      //       ),
+      //     ),
+      //   ),
+      //   primaryColor: Color(0xFF7C3AED),
+      // ),
       home: Splash(),
     );
   }
