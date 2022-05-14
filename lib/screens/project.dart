@@ -71,7 +71,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
     ofUiLists.addAll([uiNstart, uiProgress, uiCompleted]);
   }
 
-  void generateLists() async{
+  void generateLists() async {
     var res = await fetchDatabase.fetchProjectBody(widget.id);
     setState(() {
       databaseName = res.data['name'];
@@ -93,7 +93,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   }
 
   void saveChanges() async {
-     var newBody = {
+    var newBody = {
       "notStarted": _notStarted,
       "completed": _completed,
       "progress": _progress
@@ -223,7 +223,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Color(0xFF374151),
+                      color: MediaQuery.of(context).platformBrightness ==
+                              Brightness.dark
+                          ? Colors.black
+                          : Colors.white,
                       boxShadow: [
                         BoxShadow(color: Colors.black26, blurRadius: 1.0)
                       ],

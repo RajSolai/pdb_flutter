@@ -72,7 +72,7 @@ class _ListScreenState extends State<ListScreen> {
   @override
   void initState() {
     super.initState();
-    setState((){
+    setState(() {
       fetchDatabase = FetchDatabase(false);
     });
     makeApiCall();
@@ -162,7 +162,10 @@ class _ListScreenState extends State<ListScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Color(0xFF374151),
+                      color: MediaQuery.of(context).platformBrightness ==
+                              Brightness.dark
+                          ? Colors.black
+                          : Colors.white,
                       boxShadow: [
                         BoxShadow(color: Colors.black26, blurRadius: 1.0)
                       ],
